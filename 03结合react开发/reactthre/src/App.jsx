@@ -1,6 +1,7 @@
 
 import { useEffect } from 'react'
 import * as THREE from 'three'
+
 import './App.css'
 
 function App() {
@@ -36,8 +37,13 @@ useEffect(()=>{
   
   // 设置相机位置
   camera.position.z=5
+  camera.position.y=2
+  camera.position.x=2
   camera.lookAt(0,0,0)//相机看向原点
   
+  // 添加世界坐标辅助器
+  const axesHelper=new THREE.AxesHelper(5)
+  scene.add(axesHelper)
   //渲染函数
   function animate(){
       requestAnimationFrame(animate)
