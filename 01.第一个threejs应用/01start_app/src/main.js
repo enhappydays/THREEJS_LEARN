@@ -10,6 +10,8 @@ const camera= new THREE.PerspectiveCamera(
     0.1,//进平面
     1000//远平面
 )
+
+
 // 创建渲染器
 const renderer=new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth,window.innerHeight)
