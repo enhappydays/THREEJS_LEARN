@@ -9,8 +9,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "three": "^0.166.1",
-    "vue": "^3.4.29"
+    "gsap": "^3.11.3",
+    "three": "^0.147.0",
+    "vue": "^3.2.13"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.5",
