@@ -1,85 +1,76 @@
 <template>
-  <div class="canvasContainer" ref="canvasContainer"></div>
+  <div class="container" ref="container"></div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, ref } from "vue";
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { ref, onMounted } from "vue";
+// 初始化场景
+const scene = new THREE.Scene();
+// 初始化相机
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+// 设置相机位置
+camera.position.z = 0.1;
+// 初始化渲染器
+const renderer = new THREE.WebGLRenderer();
+renderer.setSize(window.innerWidth, window.innerHeight);
 
-const canvasContainer = ref(null);
+const container = ref(null);
+
+const render = () => {
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+};
+
+// 添加立方体
+// const geometry = new THREE.BoxGeometry(10, 10, 10);
+// // const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+// // const cube = new THREE.Mesh(geometry, material);
+// // scene.add(cube);
+
+// // 4_b,
+// var arr = ["4_l", "4_r", "4_u", "4_d", "4_b", "4_f"];
+// var boxMaterials = [];
+
+// arr.forEach((item) => {
+//   // 纹理加载
+//   let texture = new THREE.TextureLoader().load(`./imgs/living/${item}.jpg`);
+//   // 创建材质
+//   if (item === "4_u" || item === "4_d") {
+//     texture.rotation = Math.PI;
+//     texture.center = new THREE.Vector2(0.5, 0.5);
+//     boxMaterials.push(new THREE.MeshBasicMaterial({ map: texture }));
+//   } else {
+//     boxMaterials.push(new THREE.MeshBasicMaterial({ map: texture }));
+//   }
+// });
+// const cube = new THREE.Mesh(geometry, boxMaterials);
+// cube.geometry.scale(1, 1, -1);
+// scene.add(cube);
+
+// 添加球
+const geometry = new THREE.SphereGeometry(5, 32, 32);
+const loader = new RGBELoader();
+loader.load("./imgs/hdr/Living.hdr", (texture) => {
+  const material = new THREE.MeshBasicMaterial({ map: texture });
+  const sphere = new THREE.Mesh(geometry, material);
+  sphere.geometry.scale(1, 1, -1);
+  scene.add(sphere);
+});
+
+// 挂载完毕之后获取dom
 onMounted(() => {
-  // 初始化场景
-  const scene = new THREE.Scene();
-  // 初始化相机
-  const camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  // 初始化相机位置
-  camera.position.set(1.5, 1, 1.5);
-  camera.aspect = window.innerWidth / window.innerHeight;
-  // 更新相机投影矩阵
-  camera.updateProjectionMatrix();
-
-  // 加载背景纹理
-  const loader = new THREE.TextureLoader();
-  const bgTexture = loader.load("/assets/imgs/050.jpg");
-  bgTexture.mapping = THREE.EquirectangularRefractionMapping;
-
-  scene.background = bgTexture;
-  scene.environment = bgTexture;
-  // 添加环境光
-  const ambient = new THREE.AmbientLight(0xffffff, 1);
-  scene.add(ambient);
-
-  // 加载小熊模型
-  const gltfLoader = new GLTFLoader();
-  gltfLoader.load("/assets/model/bear.gltf", (gltf) => {
-    // console.log(gltf);
-    const model = gltf.scene.children[0];
-    model.material = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
-      envMap: bgTexture,
-      refractionRatio: 0.7,
-      reflectivity: 0.99,
-    });
-
-    scene.add(model);
-  });
-
-  // 初始化渲染器
-  const renderer = new THREE.WebGLRenderer({ antialias: true });
-  // 设置渲染器大小
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  // 监听屏幕大小变化
-  window.addEventListener("resize", () => {
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-  });
-
-  // 将渲染器添加到页面
-  canvasContainer.value.appendChild(renderer.domElement);
-
   // 添加控制器
-  const controls = new OrbitControls(camera, renderer.domElement);
-  // 设置控制器阻尼
+  const controls = new OrbitControls(camera, container.value);
   controls.enableDamping = true;
-
-  // 渲染函数
-  const render = () => {
-    // 更新控制器
-    controls.update();
-    // 渲染场景
-    renderer.render(scene, camera);
-    // 循环渲染
-    requestAnimationFrame(render);
-  };
-
+  container.value.appendChild(renderer.domElement);
   render();
 });
 </script>
@@ -88,5 +79,10 @@ onMounted(() => {
 * {
   margin: 0;
   padding: 0;
+}
+.container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #f0f0f0;
 }
 </style>
