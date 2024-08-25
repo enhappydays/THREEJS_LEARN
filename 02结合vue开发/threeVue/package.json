@@ -1,18 +1,20 @@
 {
-  "name": "app3d",
-  "version": "0.0.0",
+  "name": "ballapp",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vue-cli-service serve",
+    "build": "vue-cli-service build"
   },
   "dependencies": {
-    "three": "^0.150.1",
-    "vue": "^3.2.47"
+    "cannon-es": "^0.20.0",
+    "core-js": "^3.8.3",
+    "gsap": "^3.11.3",
+    "three": "^0.147.0",
+    "vue": "^3.2.13"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^4.0.0",
-    "vite": "^4.1.4"
+    "@vue/cli-plugin-babel": "~5.0.0",
+    "@vue/cli-service": "~5.0.0"
   }
 }
